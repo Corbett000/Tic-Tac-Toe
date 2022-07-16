@@ -10,9 +10,12 @@ struct row
 	struct tile* tile_3;
 };
 
-void clear_board(struct tile*);
-void play_game();
-void print_board(struct tile*);
+int check_board(struct tile*, char, char);
+void clear_board(struct tile *);
+int play_game(char *, char *);
+void print_board(struct tile *);
+void select_board();
+void select_character(char*, char*);
 
 #define ROWS (3)
 #define COLUMNS (3)
