@@ -8,13 +8,36 @@ int main() {
 	char player_chars[] = "XO";
 	int keep_playing = 1;
 	while (keep_playing == 1) {
-		keep_playing = play_game(player_chars);
+		printf("Please select an option:\n  1. Play Tic-Tac-Toe\n");
+		printf("  2. Select Character\n  3. Select Board Size\n  4. Exit\n");
+		int selection = 0;
+		scanf_s("%d", &selection);
+		switch (selection) {
+		case 1:
+			keep_playing = play_game(player_chars);
+			break;
+		case 2:
+			select_character(player_chars);
+			break;
+		case 3:
+			select_board();
+			break;
+		case 4:
+			keep_playing = 0;
+			break;
+		default:
+			printf("Invalid Selection!\n\n");
+			break;
+		}
+		clear_buf();
 	}
 
 	printf("Thanks for playing!\n");
 }
 
+//Checks the board to determine if a player has won the game
 int check_board(struct tile *tiles, char player_char) {
+	//Check if a win occured on a row
 	for (int i = 0; i < COLUMNS; i++) {
 		for (int j = 0; j < ROWS; j++) {
 			if (tiles[(j * COLUMNS) + i].value != player_char) break;
@@ -22,6 +45,7 @@ int check_board(struct tile *tiles, char player_char) {
 		}
 	}
 
+	//Check if a win occured on a column
 	for (int i = 0; i < ROWS; i++) {
 		for (int j = 0; j < COLUMNS; j++) {
 			if (tiles[j + (i * COLUMNS)].value != player_char) break;
@@ -32,6 +56,7 @@ int check_board(struct tile *tiles, char player_char) {
 	//Ensure there won't be an out of bounds when checking the next win conditions
 	if (COLUMNS != ROWS) return 0;
 
+	//Check if a win occured on a diagonal
 	for (int i = 0; i < ROWS; i++) {
 		if (tiles[i + (i * COLUMNS)].value != player_char) break;
 		if (i == (ROWS - 1)) return 1;
@@ -44,38 +69,21 @@ int check_board(struct tile *tiles, char player_char) {
 	return 0;
 }
 
+//Resets all of the board tiles to blank (' ')
 void clear_board(struct tile *tiles) {
 	for (int i = 0; i < (COLUMNS * ROWS); i++) {
 		tiles[i].value = ' ';
 	}
 }
 
+//Clears out the input buffer
 void clear_buf() {
 	int ch;
 	while ((ch = getchar()) != '\n' && ch != EOF);
 }
 
 int play_game(char player_chars[]) {
-	printf("Please select an option:\n  1. Play Tic-Tac-Toe\n");
-	printf("  2. Select Character\n  3. Select Board Size\n  4. Exit\n");
-	int selection = 0;
-	scanf_s("%d", &selection);
-	switch (selection) {
-		case 1:
-			break;
-		case 2:
-			select_character(player_chars);
-			return 1;
-		case 3:
-			select_board();
-			return 1;
-		case 4:
-			return 0;
-		default:
-			printf("Invalid Selection!\n\n");
-			return 1;
-	}
-
+	//Checks to make sure players are using different characters
 	if (player_chars[0] == player_chars[1]) {
 		printf("Error! Players must have different characters before playing.\n\n");
 		select_character(player_chars);
@@ -85,6 +93,7 @@ int play_game(char player_chars[]) {
 	struct tile tiles[9];
 	clear_board(tiles);
 
+	//The main game loop. Repeats until there is a draw or a winner
 	for (int i = 1; i <= (ROWS * COLUMNS); i++) {
 		int current_player = i % PLAYER_COUNT;
 		if (current_player == 0) current_player = PLAYER_COUNT;
@@ -96,6 +105,7 @@ int play_game(char player_chars[]) {
 		int selected_column = 0;
 		int selected_tile = 0;
 
+		//Takes input for where to place character and checks edge cases
 		int repeat;
 		do {
 			repeat = 0;
@@ -129,10 +139,12 @@ int play_game(char player_chars[]) {
 			print_board(tiles);
 			printf("\nCongrats Player %d! You Win!\n\n", current_player);
 			printf("Would you like to: \n  1. Go to Main Menu\n  2. Exit\n");
+
+			int selection = 1;
 			clear_buf();
 			scanf_s("%d", &selection);
-			if (selection == 2) return 0;
-			else return 1;
+			if (selection == 1) return 1;
+			else return 2;
 		}
 	}
 
@@ -140,14 +152,15 @@ int play_game(char player_chars[]) {
 	print_board(tiles);
 	printf("\nThe game has ended in a draw!\n\n");
 	printf("Would you like to: \n  1. Go to Main Menu\n  2. Exit\n");
+
+	int selection = 1;
 	clear_buf();
 	scanf_s("%d", &selection);
-	if (selection == 2) return 0;
-	else return 1;
-
-	return 1;
+	if (selection == 1) return 1;
+	else return 2;
 }
 
+//Prints out the board into the terminal
 void print_board(struct tile *tiles) {
 	char row_s[] = " ROW  ";
 
@@ -165,17 +178,19 @@ void print_board(struct tile *tiles) {
 	}
 }
 
+//TODO: ability to change the size of the board
 void select_board() {
 	return;
 }
 
+//Allows for the selection of any character. Defaults to 'X' and 'O'
 void select_character(char *player_chars) {
 	int ch = 0;
 	printf("Player 1 is currently '%c',\nEnter a new character:\n", player_chars[0]);
 	clear_buf();
-	scanf_s("%c", &player_chars[0]);
+	scanf_s("%c", &player_chars[0], 1);
 
 	printf("Player 2 is currently '%c',\nEnter a new character:\n", player_chars[1]);
 	clear_buf();
-	scanf_s("%c", &player_chars[1]);
+	scanf_s("%c", &player_chars[1], 1);
 }
