@@ -110,7 +110,7 @@ int play_game(char player_chars[]) {
 		do {
 			repeat = 0;
 
-			if (scanf_s("%d-%d\*n", &selected_row, &selected_column) != 2) {
+			if (scanf_s("%d-%d", &selected_row, &selected_column) != 2) {
 				clear_buf();
 				printf("Incorrect format! 'ROW-COLUMN'\n");
 				repeat = 1;
