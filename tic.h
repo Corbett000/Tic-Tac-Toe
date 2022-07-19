@@ -3,13 +3,6 @@ struct tile
 	char value;
 };
 
-struct row
-{
-	struct tile* tile_1;
-	struct tile* tile_2;
-	struct tile* tile_3;
-};
-
 int check_board(struct tile *, char);
 void clear_board(struct tile *);
 void clear_buf();
